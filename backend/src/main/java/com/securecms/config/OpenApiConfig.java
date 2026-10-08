@@ -1,0 +1,30 @@
+package com.securecms.config;
+
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class OpenApiConfig {
+
+    private static final String SCHEME = "bearerAuth";
+
+    @Bean
+    public OpenAPI secureCmsOpenApi() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Secure CMS API")
+                        .version("1.0.0")
+                        .description("Secure Content Management & User Management System. "
+                                + "Click 'Authorize' and paste the accessToken returned by POST /api/auth/login.")
+                        .contact(new Contact().name("Secure CMS Team")))
+                .components(new Components().addSecuritySchemes(SCHEME,
+                        new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")))
+                .addSecurityItem(new SecurityRequirement().addList(SCHEME));
+    }
+}

@@ -1,0 +1,39 @@
+# Render Blueprint: creates a PostgreSQL database + the Spring Boot API (Docker).
+# Render dashboard -> New -> Blueprint -> select this repository.
+databases:
+  - name: securecms-db
+    plan: free
+    databaseName: securecms
+    user: securecms
+
+services:
+  - type: web
+    name: securecms-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DB_TYPE
+        value: postgresql
+      - key: DB_HOST
+        fromDatabase: { name: securecms-db, property: host }
+      - key: DB_PORT
+        fromDatabase: { name: securecms-db, property: port }
+      - key: DB_NAME
+        fromDatabase: { name: securecms-db, property: database }
+      - key: DB_USERNAME
+        fromDatabase: { name: securecms-db, property: user }
+      - key: DB_PASSWORD
+        fromDatabase: { name: securecms-db, property: password }
+      - key: JWT_SECRET
+        generateValue: true
+      - key: AES_SECRET_KEY
+        generateValue: true
+      - key: SEED_SAMPLE_DATA
+        value: "true"
+      - key: SEED_DEMO_PASSWORD
+        sync: false            # you will be asked to type a demo password in the dashboard
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false            # your Netlify URL, e.g. https://securecms.netlify.app

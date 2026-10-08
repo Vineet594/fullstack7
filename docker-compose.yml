@@ -1,0 +1,16 @@
+# Local MySQL for development:  docker compose up -d
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: securecms-mysql
+    environment:
+      MYSQL_DATABASE: securecms
+      MYSQL_USER: securecms
+      MYSQL_PASSWORD: ${DB_PASSWORD:-change-me-local}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-change-me-local}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+volumes:
+  mysql-data:

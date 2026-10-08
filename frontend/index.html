@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Secure CMS Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Secure CMS</div>
+    <div class="topbar-right">
+      <span id="server-status" class="status" title="Backend status"><i></i><span>Checking server…</span></span>
+      <a id="docs-link" class="link" target="_blank" rel="noopener">API docs</a>
+      <span id="user-chip" class="chip hidden"></span>
+      <button id="logout-btn" class="btn ghost hidden">Sign out</button>
+    </div>
+  </header>
+
+  <main id="auth-view" class="auth">
+    <section class="auth-panel">
+      <h1>Content you can trust.</h1>
+      <p class="lead">Sign in to manage posts, categories and users. Every request is authenticated with JWT, authorised by role and traced with a correlation ID.</p>
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-auth="login">Sign in</button>
+        <button class="tab" data-auth="register">Create account</button>
+      </div>
+      <form id="login-form" class="form">
+        <label>Username<input name="username" autocomplete="username" required></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+        <button class="btn primary" type="submit">Sign in</button>
+      </form>
+      <form id="register-form" class="form hidden">
+        <label>Username<input name="username" autocomplete="username" required minlength="3"></label>
+        <label>Email<input name="email" type="email" autocomplete="email" required></label>
+        <label>Phone (optional, stored encrypted)<input name="phone" inputmode="tel" placeholder="+919876543210"></label>
+        <label>Password (min 8 characters)<input name="password" type="password" autocomplete="new-password" required minlength="8"></label>
+        <button class="btn primary" type="submit">Create account</button>
+      </form>
+      <p id="auth-error" class="error hidden" role="alert"></p>
+      <p class="hint">Demo data: sign in as <b>admin</b>, <b>alice</b>, <b>bob</b> or <b>charlie</b> with the demo password set on the server.</p>
+    </section>
+  </main>
+
+  <div id="app-view" class="shell hidden">
+    <nav class="side" aria-label="Sections">
+      <button class="nav active" data-view="posts">Posts</button>
+      <button class="nav" data-view="categories">Categories</button>
+      <button class="nav admin-only hidden" data-view="users">Users</button>
+      <button class="nav admin-only hidden" data-view="perf">Performance</button>
+    </nav>
+    <section class="content">
+      <div id="notice" class="notice hidden" role="status"></div>
+      <div id="view"></div>
+    </section>
+  </div>
+
+  <footer class="trace" aria-live="polite">
+    <span class="trace-label">Last request</span>
+    <code id="trace-line">No requests yet</code>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

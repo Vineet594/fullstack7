@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: secure-cms
+
+  # Use H2 for easy local run + Render free tier (no external DB needed)
+  # For MySQL, uncomment the MySQL section and set env vars
+  datasource:
+    url: jdbc:h2:mem:securecms;DB_CLOSE_DELAY=-1;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  # MySQL configuration (for production / local MySQL)
+  # datasource:
+  #   url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:secure_cms}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+  #   username: ${DB_USERNAME:root}
+  #   password: ${DB_PASSWORD:password}
+  #   driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+        # For MySQL: org.hibernate.dialect.MySQLDialect
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=10m
+
+server:
+  port: ${PORT:8080}
+
+# JWT Configuration - override via environment variables
+app:
+  jwt:
+    secret: ${JWT_SECRET:ThisIsAVerySecureSecretKeyForJWTTokenGenerationThatIsAtLeast256BitsLongForHS256Algorithm}
+    access-token-expiration-ms: 900000          # 15 minutes
+    refresh-token-expiration-ms: 604800000      # 7 days
+  encryption:
+    secret: ${AES_SECRET:ThisIsA32ByteAESKeyForGCM!!}   # Exactly 32 bytes for AES-256
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:3000,http://localhost:5173}
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    com.cms.secure: INFO
+    org.hibernate.SQL: DEBUG
+    org.springframework.security: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level correlationId=%X{correlationId} %logger{36} - %msg%n"
